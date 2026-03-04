@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>حاسبة سعر الذهب | Jewelry Calculator</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+
     <style>
         :root {
             --primary-gold: #D4AF37;
@@ -21,7 +26,8 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            /* تحديث الخط هنا */
+            font-family: 'IBM Plex Sans Arabic', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
@@ -43,19 +49,19 @@
             padding: 20px 0;
         }
 
-        /* --- كود الشعار المضاف --- */
+        /* الشعار */
         .main-logo {
-            width: 120px; /* يمكنك تغيير الحجم من هنا */
+            width: 120px;
             height: auto;
             margin: 0 auto 15px auto;
             display: block;
         }
-        /* ------------------------ */
 
         header h1 {
             font-size: 1.5rem;
             color: var(--primary-dark);
             margin-bottom: 5px;
+            font-weight: 700;
         }
 
         /* Card Layout */
@@ -88,6 +94,7 @@
             transition: all 0.3s ease;
             outline: none;
             -moz-appearance: textfield;
+            font-family: inherit; /* لضمان استخدام نفس الخط داخل المدخلات */
         }
 
         input::-webkit-outer-spin-button,
@@ -210,6 +217,7 @@
             width: 100%;
             padding: 10px;
             text-decoration: underline;
+            font-family: inherit;
         }
 
         /* Animations */
@@ -230,7 +238,6 @@
     <div class="container">
         <header>
             <img src="NewLogoGold.svg" alt="NewLogoGold" class="main-logo">
-            
             <h1>حاسبة الذهب</h1>
             <p style="color: var(--text-muted); font-size: 0.9rem;">أسعار دقيقة شاملة المصنعية والضريبة</p>
         </header>
@@ -312,27 +319,21 @@
 
         options.forEach(option => {
             option.addEventListener('click', () => {
-                // Update Selection
                 options.forEach(opt => opt.classList.remove('selected'));
                 option.classList.add('selected');
-                
                 selectedKarat = parseInt(option.dataset.value);
                 selectedKaratDisplay.innerText = `عيار ${selectedKarat}`;
-                
-                // Close and Calculate
                 karatOptionsContainer.classList.remove('active');
                 calculate();
             });
         });
 
-        // Close dropdown when clicking outside
         window.addEventListener('click', (e) => {
             if (!karatSelect.contains(e.target)) {
                 karatOptionsContainer.classList.remove('active');
             }
         });
 
-        // --- Formatting Logic ---
         const formatCurrency = (num) => {
             return new Intl.NumberFormat('en-US', {
                 minimumFractionDigits: 2,
@@ -340,38 +341,25 @@
             }).format(num) + ' جـ';
         };
 
-        // --- Calculation Logic ---
         const calculate = () => {
-            // Get raw values or default to 0
             const p21 = parseFloat(price21Input.value) || 0;
             const grams = parseFloat(weightInput.value) || 0;
             const tax = parseFloat(taxInput.value) || 0;
             const mfg = parseFloat(manufacturingInput.value) || 0;
 
-            // Safety check for negative numbers
             if (p21 < 0 || grams < 0 || tax < 0 || mfg < 0) return;
 
-            // Step 1: Base Karat Price
             const karatPrice = p21 * (selectedKarat / 21);
-
-            // Step 2: Price After Tax
             const priceAfterTax = karatPrice * (1 + (tax / 100));
-
-            // Step 3: Final Gram Price
             const finalGramPrice = priceAfterTax + mfg;
-
-            // Step 4: Final Total Price
             const finalPiecePrice = finalGramPrice * grams;
 
-            // Update UI
             outGramPrice.innerText = formatCurrency(finalGramPrice);
             outTotalPiecePrice.innerText = formatCurrency(finalPiecePrice);
         };
 
-        // --- Event Listeners ---
         inputs.forEach(input => {
             input.addEventListener('input', () => {
-                // Prevent negative values manually
                 if (input.value < 0) input.value = 0;
                 calculate();
             });
@@ -379,16 +367,13 @@
 
         resetBtn.addEventListener('click', () => {
             inputs.forEach(input => input.value = '');
-            // Reset Dropdown
             selectedKarat = 21;
             selectedKaratDisplay.innerText = 'عيار 21';
             options.forEach(opt => opt.classList.remove('selected'));
             options[1].classList.add('selected');
-            
             calculate();
         });
 
-        // Initialize
         calculate();
     </script>
 </body>
